@@ -22,6 +22,14 @@ container.appendChild(canvas);
 
 const context = canvas.getContext('2d');
 
+function resizeCanvasSize() {
+  const width = Math.min(window.innerWidth, 600);
+  canvas.style.width = width + 'px';
+  canvas.style.height = (width * 5 / 3) + 'px';
+}
+resizeCanvasSize();
+window.addEventListener('resize', resizeCanvasSize);
+
 const controls = document.createElement('div');
 controls.style.marginTop = '1rem';
 controls.style.display = 'grid';

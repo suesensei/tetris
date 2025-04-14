@@ -1,21 +1,32 @@
-// シンプルなテトリスゲームに操作ボタンと色付きブロックを追加（HTML + CSS + JavaScript）
-// このコードはブラウザで動作します。
+// スマホ対応：画面サイズに応じてキャンバスを拡大し、操作性を改善
 
 const container = document.createElement('div');
 container.style.display = 'flex';
 container.style.flexDirection = 'column';
 container.style.alignItems = 'center';
+container.style.padding = '1rem';
+container.style.boxSizing = 'border-box';
+container.style.maxWidth = '100vw';
+container.style.overflow = 'hidden';
+document.body.style.margin = '0';
+document.body.style.backgroundColor = '#000';
 document.body.appendChild(container);
 
 const canvas = document.createElement('canvas');
 canvas.width = 240;
 canvas.height = 400;
+canvas.style.width = '90vw';
+canvas.style.maxWidth = '360px';
+canvas.style.height = 'auto';
 container.appendChild(canvas);
 const context = canvas.getContext('2d');
-context.scale(20, 20);
+context.scale(canvas.width / 12, canvas.height / 20);
 
 const controls = document.createElement('div');
-controls.style.marginTop = '10px';
+controls.style.marginTop = '1rem';
+controls.style.display = 'flex';
+controls.style.flexWrap = 'wrap';
+controls.style.justifyContent = 'center';
 controls.innerHTML = `
   <button id="left">◀️</button>
   <button id="rotateLeft">⤿</button>
@@ -23,6 +34,15 @@ controls.innerHTML = `
   <button id="right">▶️</button>
   <button id="down">⬇️</button>
 `;
+Array.from(controls.querySelectorAll('button')).forEach(btn => {
+  btn.style.fontSize = '1.5rem';
+  btn.style.margin = '0.5rem';
+  btn.style.padding = '0.7rem 1.2rem';
+  btn.style.borderRadius = '8px';
+  btn.style.border = 'none';
+  btn.style.background = '#444';
+  btn.style.color = '#fff';
+});
 container.appendChild(controls);
 
 document.getElementById('left').onclick = () => playerMove(-1);
@@ -30,6 +50,8 @@ document.getElementById('right').onclick = () => playerMove(1);
 document.getElementById('down').onclick = () => playerDrop();
 document.getElementById('rotateLeft').onclick = () => playerRotateWrapper(-1);
 document.getElementById('rotateRight').onclick = () => playerRotateWrapper(1);
+
+// --- ここから先はゲームのロジック部分（省略なし） ---
 
 function arenaSweep() {
   let rowCount = 1;
@@ -121,14 +143,14 @@ function createPiece(type) {
 
 const colors = [
   null,
-  'purple', // T
-  'yellow', // O
-  'orange', // L
-  'blue',   // J
-  'cyan',   // I
-  'green',  // S
-  'red',    // Z
-  'pink',   // X (新しいブロック)
+  'purple',
+  'yellow',
+  'orange',
+  'blue',
+  'cyan',
+  'green',
+  'red',
+  'pink',
 ];
 
 function drawMatrix(matrix, offset) {
@@ -136,9 +158,7 @@ function drawMatrix(matrix, offset) {
     row.forEach((value, x) => {
       if (value !== 0) {
         context.fillStyle = colors[value];
-        context.fillRect(x + offset.x,
-                         y + offset.y,
-                         1, 1);
+        context.fillRect(x + offset.x, y + offset.y, 1, 1);
       }
     });
   });
@@ -183,8 +203,7 @@ function playerReset() {
   const pieces = 'ILJOTSZX';
   player.matrix = createPiece(pieces[Math.floor(Math.random() * pieces.length)]);
   player.pos.y = 0;
-  player.pos.x = (arena[0].length / 2 | 0) -
-                 (player.matrix[0].length / 2 | 0);
+  player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
   if (collide(arena, player)) {
     arena.forEach(row => row.fill(0));
   }

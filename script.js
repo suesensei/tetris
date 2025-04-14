@@ -15,12 +15,22 @@ document.body.appendChild(container);
 const canvas = document.createElement('canvas');
 canvas.width = 240;
 canvas.height = 400;
-canvas.style.width = '90vw';
-canvas.style.maxWidth = '360px';
+canvas.style.width = '100vw';
+canvas.style.maxWidth = '100%';
 canvas.style.height = 'auto';
+canvas.style.touchAction = 'none';
 container.appendChild(canvas);
+
+// スマホ画面に応じた動的スケーリング
+function resizeCanvas() {
+  const scaleX = canvas.clientWidth / 12;
+  const scaleY = (canvas.clientHeight || (canvas.clientWidth * 20 / 12)) / 20;
+  context.setTransform(scaleX, 0, 0, scaleY, 0, 0);
+}
+
 const context = canvas.getContext('2d');
-context.scale(canvas.width / 12, canvas.height / 20);
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
 
 const controls = document.createElement('div');
 controls.style.marginTop = '1rem';
@@ -35,9 +45,9 @@ controls.innerHTML = `
   <button id="down">⬇️</button>
 `;
 Array.from(controls.querySelectorAll('button')).forEach(btn => {
-  btn.style.fontSize = '1.5rem';
-  btn.style.margin = '0.5rem';
-  btn.style.padding = '0.7rem 1.2rem';
+  btn.style.fontSize = '6vw';
+  btn.style.margin = '1vw';
+  btn.style.padding = '2vw 4vw';
   btn.style.borderRadius = '8px';
   btn.style.border = 'none';
   btn.style.background = '#444';
@@ -51,7 +61,7 @@ document.getElementById('down').onclick = () => playerDrop();
 document.getElementById('rotateLeft').onclick = () => playerRotateWrapper(-1);
 document.getElementById('rotateRight').onclick = () => playerRotateWrapper(1);
 
-// --- ここから先はゲームのロジック部分（省略なし） ---
+// --- 以下、ゲームのロジックは変更なし ---
 
 function arenaSweep() {
   let rowCount = 1;

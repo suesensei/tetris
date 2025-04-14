@@ -1,4 +1,4 @@
-// スマホとPC両対応：キャンバスサイズとスケーリングを調整し、操作しやすく改善
+// スマホとPC両対応：ブロックが落ちない不具合修正＋描画スケーリングを draw 内に統合
 
 const container = document.createElement('div');
 container.style.display = 'flex';
@@ -21,15 +21,6 @@ canvas.style.touchAction = 'none';
 container.appendChild(canvas);
 
 const context = canvas.getContext('2d');
-
-function resizeCanvas() {
-  const scaleX = canvas.clientWidth / 12;
-  const scaleY = canvas.clientHeight / 20;
-  context.setTransform(scaleX, 0, 0, scaleY, 0, 0);
-}
-
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
 
 const controls = document.createElement('div');
 controls.style.marginTop = '1rem';
@@ -65,8 +56,6 @@ document.getElementById('right').onclick = () => playerMove(1);
 document.getElementById('down').onclick = () => playerDrop();
 document.getElementById('rotateLeft').onclick = () => playerRotateWrapper(-1);
 document.getElementById('rotateRight').onclick = () => playerRotateWrapper(1);
-
-// --- 以下、ゲームのロジックは変更なし ---
 
 function arenaSweep() {
   let rowCount = 1;
@@ -180,8 +169,12 @@ function drawMatrix(matrix, offset) {
 }
 
 function draw() {
+  const scaleX = canvas.clientWidth / 12;
+  const scaleY = canvas.clientHeight / 20;
+  context.setTransform(scaleX, 0, 0, scaleY, 0, 0);
+
   context.fillStyle = '#000';
-  context.fillRect(0, 0, canvas.width, canvas.height);
+  context.fillRect(0, 0, 12, 20);
   drawMatrix(arena, {x: 0, y: 0});
   drawMatrix(player.matrix, player.pos);
 }

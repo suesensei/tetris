@@ -169,8 +169,9 @@ function drawMatrix(matrix, offset) {
 }
 
 function draw() {
-  const scaleX = canvas.clientWidth / 12;
-  const scaleY = canvas.clientHeight / 20;
+  const bounds = canvas.getBoundingClientRect();
+  const scaleX = bounds.width / 12;
+  const scaleY = bounds.height / 20;
   context.setTransform(scaleX, 0, 0, scaleY, 0, 0);
 
   context.fillStyle = '#000';

@@ -1,4 +1,4 @@
-// スマホ対応：画面サイズに応じてキャンバスを拡大し、操作性を改善
+// スマホとPC両対応：キャンバスサイズとスケーリングを調整し、操作しやすく改善
 
 const container = document.createElement('div');
 container.style.display = 'flex';
@@ -6,8 +6,6 @@ container.style.flexDirection = 'column';
 container.style.alignItems = 'center';
 container.style.padding = '1rem';
 container.style.boxSizing = 'border-box';
-container.style.maxWidth = '100vw';
-container.style.overflow = 'hidden';
 document.body.style.margin = '0';
 document.body.style.backgroundColor = '#000';
 document.body.appendChild(container);
@@ -15,44 +13,51 @@ document.body.appendChild(container);
 const canvas = document.createElement('canvas');
 canvas.width = 240;
 canvas.height = 400;
-canvas.style.width = '100vw';
-canvas.style.maxWidth = '100%';
-canvas.style.height = 'auto';
+canvas.style.display = 'block';
+canvas.style.width = '100%';
+canvas.style.maxWidth = '600px';
+canvas.style.aspectRatio = '3 / 5';
 canvas.style.touchAction = 'none';
 container.appendChild(canvas);
 
-// スマホ画面に応じた動的スケーリング
+const context = canvas.getContext('2d');
+
 function resizeCanvas() {
   const scaleX = canvas.clientWidth / 12;
-  const scaleY = (canvas.clientHeight || (canvas.clientWidth * 20 / 12)) / 20;
+  const scaleY = canvas.clientHeight / 20;
   context.setTransform(scaleX, 0, 0, scaleY, 0, 0);
 }
 
-const context = canvas.getContext('2d');
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
 
 const controls = document.createElement('div');
 controls.style.marginTop = '1rem';
-controls.style.display = 'flex';
-controls.style.flexWrap = 'wrap';
-controls.style.justifyContent = 'center';
+controls.style.display = 'grid';
+controls.style.gridTemplateColumns = 'repeat(3, 1fr)';
+controls.style.gridGap = '1rem';
+controls.style.width = '100%';
+controls.style.maxWidth = '400px';
+
 controls.innerHTML = `
-  <button id="left">◀️</button>
   <button id="rotateLeft">⤿</button>
-  <button id="rotateRight">⤾</button>
-  <button id="right">▶️</button>
   <button id="down">⬇️</button>
+  <button id="rotateRight">⤾</button>
+  <button id="left">◀️</button>
+  <button style="visibility: hidden;"></button>
+  <button id="right">▶️</button>
 `;
+
 Array.from(controls.querySelectorAll('button')).forEach(btn => {
   btn.style.fontSize = '6vw';
-  btn.style.margin = '1vw';
-  btn.style.padding = '2vw 4vw';
-  btn.style.borderRadius = '8px';
+  btn.style.padding = '1.5rem';
+  btn.style.borderRadius = '12px';
   btn.style.border = 'none';
   btn.style.background = '#444';
   btn.style.color = '#fff';
+  btn.style.width = '100%';
 });
+
 container.appendChild(controls);
 
 document.getElementById('left').onclick = () => playerMove(-1);

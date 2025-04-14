@@ -1,4 +1,4 @@
-// シンプルなテトリスゲームに操作ボタンを追加（HTML + CSS + JavaScript）
+// シンプルなテトリスゲームに操作ボタンと色付きブロックを追加（HTML + CSS + JavaScript）
 // このコードはブラウザで動作します。
 
 const container = document.createElement('div');
@@ -110,14 +110,32 @@ function createPiece(type) {
       [0, 7, 7],
       [0, 0, 0],
     ];
+  } else if (type === 'X') {
+    return [
+      [8, 8, 8],
+      [8, 0, 8],
+      [8, 8, 8],
+    ];
   }
 }
+
+const colors = [
+  null,
+  'purple', // T
+  'yellow', // O
+  'orange', // L
+  'blue',   // J
+  'cyan',   // I
+  'green',  // S
+  'red',    // Z
+  'pink',   // X (新しいブロック)
+];
 
 function drawMatrix(matrix, offset) {
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value !== 0) {
-        context.fillStyle = 'red';
+        context.fillStyle = colors[value];
         context.fillRect(x + offset.x,
                          y + offset.y,
                          1, 1);
@@ -162,8 +180,8 @@ function playerMove(dir) {
 }
 
 function playerReset() {
-  const pieces = 'ILJOTSZ';
-  player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
+  const pieces = 'ILJOTSZX';
+  player.matrix = createPiece(pieces[Math.floor(Math.random() * pieces.length)]);
   player.pos.y = 0;
   player.pos.x = (arena[0].length / 2 | 0) -
                  (player.matrix[0].length / 2 | 0);
